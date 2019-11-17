@@ -126,7 +126,6 @@ class MainWindow(QMainWindow):
         self.init_map()
         self.reset_map()
         
-
         self.show()
         
     def init_map(self):
