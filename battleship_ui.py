@@ -16,19 +16,17 @@ import os
 
 '''
 Ideas:
-1 - Assume that this is only HUMANvsAI or AIvsAI
-2 - Assume for now only random boat placement
-3 - Own board features visibility of own boats. Enemy board features all clickable actions
-4 - Define generic board and make two subclasses for enemy and own
-5 - Representation: 
-    -> Unexplored: Gray in both boards
-    -> Own boats: Green in own board
-    -> Own or enemy boat hit: Red
-    -> Own or enemy boat sunk: Dark red
-    -> Explored and water: Blue in both boards
-6 - Create new class Boat with attribute is_sunk
-7 - Add text/console explaining latest events (e.g. AI fires at (x,y) / Destroyer sank!)
+1 - Find a way to determine when boats are sunk (e.g. create new class Boat with attribute is_sunk)
+2 - Function to place boats randomly
+3 - Implementing an AI: how does it play without a board? same type of board but not shown?
+4 - Turn-based features
+5 - Add text/console explaining latest events (e.g. AI fires at (x,y) / Destroyer sank!)
+6 - Animations and timing of events (e.g. squares change color gradually)
+7 - User to define how many boats
+8 - User to define size of board
+9 - User to place boats
 '''
+
 
 class Square(QWidget):
     expandable = pyqtSignal(int, int)
@@ -40,74 +38,73 @@ class Square(QWidget):
         self.setFixedSize(QSize(30, 30))
         self.x = x
         self.y = y
-
-    def reset(self):
-        self.is_start = False
-        self.is_mine = False
-        self.adjacent_n = 0
-
-        self.is_revealed = False
-        self.is_flagged = False
-
-        self.update()
+        self.has_boat = False
+        self.is_hit = False
+        self.is_sunk = False
+        self.is_own = None
 
     def paintEvent(self, event):
+        """
+        Paints square depending on whether it has_boat, is_hit, is_sunk and is_own
+            -> Unexplored: Gray in both boards
+            -> Own boats: Green in own board
+            -> Own or enemy boat hit: Red in both boards
+            -> Own or enemy boat sunk: Dark red in both boards
+            -> Explored and water: Blue in both boards
+        """
+
+        if self.has_boat:
+            if self.is_hit:
+                if self.is_sunk:
+                    inner, outer = QColor('#820808'), QColor('#5e0606')  # sunk
+                elif not self.is_sunk:
+                    inner, outer = QColor('#ff0000'), QColor('#bd0000')  # hit but not sunk
+            elif not self.is_hit:
+                if self.is_own:
+                    inner, outer = QColor('#019424'), QColor('#006e1a')  # own boat
+                elif not self.is_own:
+                    inner, outer = Qt.lightGray, Qt.gray,  # unexplored
+        elif not self.has_boat:
+            if self.is_hit:
+                inner, outer = QColor('#00bfff'), QColor('##008bba')  # water
+            elif not self.is_hit:
+                inner, outer = Qt.lightGray, Qt.gray,  # unexplored
+
+        # p is a QPainter widget class; performs low-level painting on widgets
         p = QPainter(self)
         p.setRenderHint(QPainter.Antialiasing)
-
+        # inside of rectangle
         r = event.rect()
-
-        if self.is_revealed:
-            color = self.palette().color(QPalette.Background)
-            outer, inner = color, color
-        else:
-            outer, inner = Qt.gray, Qt.lightGray
-
         p.fillRect(r, QBrush(inner))
+        # outside of rectangle
         pen = QPen(outer)
         pen.setWidth(1)
         p.setPen(pen)
         p.drawRect(r)
 
-        if self.is_revealed:
-            if self.is_start:
-                p.drawPixmap(r, QPixmap(IMG_START))
+    def hit(self):
+        self.is_hit = True
+        self.update()
 
-            elif self.is_mine:
-                p.drawPixmap(r, QPixmap(IMG_BOMB))
+    def place_boat(self):
+        self.has_boat = True
 
-            elif self.adjacent_n > 0:
-                pen = QPen(NUM_COLORS[self.adjacent_n])
-                p.setPen(pen)
-                f = p.font()
-                f.setBold(True)
-                p.setFont(f)
-                p.drawText(r, Qt.AlignHCenter | Qt.AlignVCenter, str(self.adjacent_n))
-
-        elif self.is_flagged:
-            p.drawPixmap(r, QPixmap(IMG_FLAG))
-
-    def reveal(self):
-        self.is_revealed = True
+    def reset(self):
+        self.has_boat = False
+        self.is_hit = False
+        self.is_sunk = False
+        self.is_own = None
         self.update()
 
     def click(self):
-        if not self.is_revealed:
-            self.reveal()
-            if self.adjacent_n == 0:
-                self.expandable.emit(self.x, self.y)
-
+        if not self.is_hit:
+            self.hit()
         self.clicked.emit()
 
-    def mouseReleaseEvent(self, e):
-        if (e.button() == Qt.RightButton and not self.is_revealed):
-            self.flag()
-
-        elif (e.button() == Qt.LeftButton):
+    def mouseReleaseEvent(self, event):
+        if event.button() == Qt.LeftButton and not self.is_own:
             self.click()
 
-            if self.is_mine:
-                self.ohno.emit()
 
 class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
@@ -155,19 +152,16 @@ class MainWindow(QMainWindow):
         for x in range(0, self.b_size):
             for y in range(0, self.b_size):
                 sq = Square(x, y)
+                sq.is_own = True
                 self.own_grid.addWidget(sq, y, x)
 
                 sq = Square(x, y)
+                sq.is_own = False
                 self.enemy_grid.addWidget(sq, y, x)
-                # Connect signal to handle expansion.
-#                w.clicked.connect(self.trigger_start)
-#                w.expandable.connect(self.expand_reveal)
-#                w.ohno.connect(self.game_over)
-        
-        # Place resize on the event queue, giving control back to Qt before.
+
 
     def reset_map(self):
-        # Clear all mine positions
+        # Clear both boards
         for x in range(0, self.b_size):
             for y in range(0, self.b_size):
                 own = self.own_grid.itemAtPosition(y, x).widget()
