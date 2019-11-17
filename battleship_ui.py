@@ -14,13 +14,29 @@ import time
 import os
 
 
-class Pos(QWidget):
+'''
+Ideas:
+1 - Assume that this is only HUMANvsAI or AIvsAI
+2 - Assume for now only random boat placement
+3 - Own board features visibility of own boats. Enemy board features all clickable actions
+4 - Define generic board and make two subclasses for enemy and own
+5 - Representation: 
+    -> Unexplored: Gray in both boards
+    -> Own boats: Green in own board
+    -> Own or enemy boat hit: Red
+    -> Own or enemy boat sunk: Dark red
+    -> Explored and water: Blue in both boards
+6 - Create new class Boat with attribute is_sunk
+7 - Add text/console explaining latest events (e.g. AI fires at (x,y) / Destroyer sank!)
+'''
+
+class Square(QWidget):
     expandable = pyqtSignal(int, int)
     clicked = pyqtSignal()
     ohno = pyqtSignal()
 
     def __init__(self, x, y, *args, **kwargs):
-        super(Pos, self).__init__(*args, **kwargs)
+        super(Square, self).__init__(*args, **kwargs)
         self.setFixedSize(QSize(30, 30))
         self.x = x
         self.y = y
@@ -138,10 +154,10 @@ class MainWindow(QMainWindow):
         # Add positions to the map
         for x in range(0, self.b_size):
             for y in range(0, self.b_size):
-                sq = Pos(x, y)
+                sq = Square(x, y)
                 self.own_grid.addWidget(sq, y, x)
 
-                sq = Pos(x, y)
+                sq = Square(x, y)
                 self.enemy_grid.addWidget(sq, y, x)
                 # Connect signal to handle expansion.
 #                w.clicked.connect(self.trigger_start)
