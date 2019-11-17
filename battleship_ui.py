@@ -9,10 +9,10 @@ Created on Sun Nov 17 12:07:24 2019
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
-
 import random
 import time
 import os
+
 
 class Pos(QWidget):
     expandable = pyqtSignal(int, int)
@@ -21,9 +21,7 @@ class Pos(QWidget):
 
     def __init__(self, x, y, *args, **kwargs):
         super(Pos, self).__init__(*args, **kwargs)
-
         self.setFixedSize(QSize(30, 30))
-
         self.x = x
         self.y = y
 
@@ -101,26 +99,34 @@ class MainWindow(QMainWindow):
         self.b_size, self.n_mines = 10, 10
         
         w = QWidget()
-        hb = QHBoxLayout()       
+        hb = QHBoxLayout()
         
-#        l = QLabel()
-##        l.setPixmap(QPixmap.fromImage(IMG_BOMB))
-#        l.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
-#        hb.addWidget(l)
-#
-#        l = QLabel()
-##        l.setPixmap(QPixmap.fromImage(IMG_CLOCK))
-#        l.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-#        hb.addWidget(l)
+        # define own board
+        vb_own = QVBoxLayout()
+        l_own = QLabel()
+        l_own.setText('Own board')
+        vb_own.addWidget(l_own)
 
-        vb = QVBoxLayout()
-        vb.addLayout(hb)
+        self.own_grid = QGridLayout()
+        self.own_grid.setSpacing(3)
+        vb_own.addLayout(self.own_grid)
 
-        self.grid = QGridLayout()
-        self.grid.setSpacing(3)
+        # define enemy board
+        vb_enemy = QVBoxLayout()
+        l_enemy = QLabel()
+        l_enemy.setText('Enemy board')
+        vb_enemy.addWidget(l_enemy)
 
-        vb.addLayout(self.grid)
-        w.setLayout(vb)
+        self.enemy_grid = QGridLayout()
+        self.enemy_grid.setSpacing(3)
+        vb_enemy.addLayout(self.enemy_grid)
+
+        # merge into layout
+        v_spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        hb.addLayout(vb_own)
+        hb.addItem(v_spacer)
+        hb.addLayout(vb_enemy)
+        w.setLayout(hb)
         self.setCentralWidget(w)
 
         self.init_map()
@@ -133,29 +139,28 @@ class MainWindow(QMainWindow):
         for x in range(0, self.b_size):
             for y in range(0, self.b_size):
                 sq = Pos(x, y)
-                self.grid.addWidget(sq, y, x)
+                self.own_grid.addWidget(sq, y, x)
+
+                sq = Pos(x, y)
+                self.enemy_grid.addWidget(sq, y, x)
                 # Connect signal to handle expansion.
 #                w.clicked.connect(self.trigger_start)
 #                w.expandable.connect(self.expand_reveal)
 #                w.ohno.connect(self.game_over)
         
         # Place resize on the event queue, giving control back to Qt before.
-        QTimer.singleShot(0, lambda: self.resize(1,1))
-
-        
-        w = QWidget()
-        hb = QHBoxLayout()
-
 
     def reset_map(self):
         # Clear all mine positions
         for x in range(0, self.b_size):
             for y in range(0, self.b_size):
-                w = self.grid.itemAtPosition(y, x).widget()
-                w.reset()
+                own = self.own_grid.itemAtPosition(y, x).widget()
+                own.reset()
+                
+                enemy = self.enemy_grid.itemAtPosition(y, x).widget()
+                enemy.reset()
 
 
-    
 
 if __name__ == '__main__':
     app = QApplication([])
