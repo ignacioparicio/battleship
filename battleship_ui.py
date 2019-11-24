@@ -13,25 +13,26 @@ import random
 import time
 import os
 
-'''
-Ideas:
-1 - Find a way to determine when boats are sunk (e.g. create new class Boat with attribute is_sunk) //Done
-2a - Function to place boats randomly //Done
-2b - Smart boat placement //Done
-3 - Implementing an AI: how does it play without a board? same type of board but not shown?
-4 - Turn-based features
-5 - Add text/console explaining latest events (e.g. AI fires at (x,y) / Destroyer sank!)
-6 - Animations and timing of events (e.g. squares change color gradually)
-7 - User to define how many boats
-8 - User to define size of board
-9 - User to place boats
-'''
-
+# TODO: Find a way to determine when boats are sunk (e.g. create new class Boat with attribute is_sunk) //Done
+# TODO: Function to place boats randomly //Done
+# TODO: Smart boat placement //Done
+# TODO: Turn-based features:
+#   -> implement self.is_over based of player.lost_game based on all boats.is_sunk
+#   -> give a board and boats to player //Done
+#   -> linked to previous: give boat to board? //Not needed
+#   -> functionality to give turn to player/AI //Done
+#   -> functionality to know if last fire was a hit //Done
+# TODO: Implementing an AI: how does it play without a board? same type of board but not shown?
+#   -> AI to move - function outside, store board as array and create algorithm to fire depending on len of boats left and on already hit squares
+# TODO: Add text/console explaining latest events (e.g. AI fires at (x,y) / Destroyer sank!)
+# TODO: Animations and timing of events (e.g. squares change color gradually)
+# TODO: User to define how many boats/size of board/placement of boats
 
 class Square(QWidget):
     expandable = pyqtSignal(int, int)
     clicked = pyqtSignal()
-    #ohno = pyqtSignal()
+
+    # ohno = pyqtSignal()
 
     def __init__(self, x, y, *args, **kwargs):
         super(Square, self).__init__(*args, **kwargs)
@@ -42,16 +43,23 @@ class Square(QWidget):
         self.boat = None
         self.is_hit = False
         self.is_sunk = False
-        self.is_own = None
+        self.is_p1 = None
+        self.is_clickable = False
 
     def paintEvent(self, event):
         """
-        Paints square depending on whether it has_boat, is_hit, is_sunk and is_own
+        paintEvent is called through update(); it repaints the squares of both own and enemy board
+        
+        Args:
+            event: a PyQt event
+
+        Returns: None, but paints the squares as:
             -> Unexplored: Gray in both boards
             -> Own boats: Green in own board
             -> Own or enemy boat hit: Red in both boards
             -> Own or enemy boat sunk: Dark red in both boards
             -> Explored and water: Blue in both boards
+
         """
 
         if self.has_boat:
@@ -61,9 +69,9 @@ class Square(QWidget):
                 elif not self.is_sunk:
                     inner, outer = QColor('#ff0000'), QColor('#bd0000')  # hit but not sunk
             elif not self.is_hit:
-                if self.is_own:
+                if self.is_p1:
                     inner, outer = QColor('#019424'), QColor('#006e1a')  # own boat
-                elif not self.is_own:
+                elif not self.is_p1:
                     inner, outer = Qt.lightGray, Qt.gray,  # unexplored
         elif not self.has_boat:
             if self.is_hit:
@@ -101,78 +109,265 @@ class Square(QWidget):
         self.update()
 
     def click(self):
-        if not self.is_hit:
-            self.hit()
-        self.clicked.emit()
+        if self.is_clickable:
+            if not self.is_hit:
+                self.hit()
+                if not self.has_boat:
+                    for player in players:
+                        player.set_turn(not player.get_turn())
+
+            self.clicked.emit()
+            window.run_game()
 
     def mouseReleaseEvent(self, event):
-        if event.button() == Qt.LeftButton and not self.is_own:
+        if event.button() == Qt.LeftButton and not self.is_p1:
             self.click()
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, b_size, boat_dict, players, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
-        self.b_size = 10
+        self.b_size = b_size
+        self.boat_dict = boat_dict
+        self.players = players
+        self.other_player = {players[0]: players[1], players[1]: players[0]}
 
         w = QWidget()
         hb = QHBoxLayout()
 
-        # define own board
-        vb_own = QVBoxLayout()
-        l_own = QLabel()
-        l_own.setText('Own board')
-        vb_own.addWidget(l_own)
+        # define player1 board
+        vb_p1 = QVBoxLayout()
+        title_p1 = QLabel()
+        title_p1.setText(f'Board of {players[0].get_name()} - {players[0].get_nature()}')
+        vb_p1.addWidget(title_p1)
+        players[0].set_title_label(title_p1)
 
-        self.own_grid = QGridLayout()
-        self.own_grid.setSpacing(3)
-        vb_own.addLayout(self.own_grid)
+        self.grid_p1 = QGridLayout()
+        self.grid_p1.setSpacing(3)
+        vb_p1.addLayout(self.grid_p1)
 
-        # define enemy board
-        vb_enemy = QVBoxLayout()
-        l_enemy = QLabel()
-        l_enemy.setText('Enemy board')
-        vb_enemy.addWidget(l_enemy)
+        # define player2 board
+        vb_p2 = QVBoxLayout()
+        title_p2 = QLabel()
+        title_p2.setText(f'Board of {players[1].get_name()} - {players[1].get_nature()}')
+        vb_p2.addWidget(title_p2)
+        players[1].set_title_label(title_p2)
 
-        self.enemy_grid = QGridLayout()
-        self.enemy_grid.setSpacing(3)
-        vb_enemy.addLayout(self.enemy_grid)
+        self.grid_p2 = QGridLayout()
+        self.grid_p2.setSpacing(3)
+        vb_p2.addLayout(self.grid_p2)
 
         # merge into layout
         v_spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
-        hb.addLayout(vb_own)
+        hb.addLayout(vb_p1)
         hb.addItem(v_spacer)
-        hb.addLayout(vb_enemy)
+        hb.addLayout(vb_p2)
         w.setLayout(hb)
         self.setCentralWidget(w)
+        
+        # initialize boards and give them to players
+        self.init_board()
+        self.players[0].set_grid(self.grid_p1)
+        self.players[1].set_grid(self.grid_p2)
 
-        self.init_map()
-        #self.reset_map()
+        # self.reset_map()
+        for player in players:
+            self.set_board(player)
 
         self.show()
 
-    def init_map(self):
-        # Add positions to the map
+        self.run_game()
+
+    def run_game(self):
+        for p in self.players:
+            if p.get_turn():
+                self.give_turn(self.other_player[p], False)
+                self.give_turn(p, True)
+                if p.get_nature() == 'AI':
+                    AI_move(self.other_player[p].get_board())
+
+    
+    def give_turn(self, player, turn):
+        player.set_turn(turn)
+        grid = self.other_player[player].get_board()
+        squares = self.get_all_grid_squares(grid)
+        for sq in squares:
+            sq.is_clickable = turn
+
+        text = (f'Board of {player.get_name()} - {player.get_nature()}')
+        if turn:
+            text = text + ' - Your turn!'
+        player.title_label.setText(text)
+
+                
+    def get_all_grid_squares(self, grid):
+        """
+        
+        Args:
+            grid: PyQt grid on which boats are placed
+
+        Returns:
+            squares: list, colletion of PyQt widgets acting as squares of the board
+            
+        """
+        squares = []
+        for x in range(0, self.b_size):
+            for y in range(0, self.b_size):
+                squares.append(grid.itemAtPosition(y, x).widget())
+        return squares
+        
+                
+    def init_board(self):
+        """
+        Adds squares both to grids of player1 and player2
+
+        """
         for x in range(0, self.b_size):
             for y in range(0, self.b_size):
                 sq = Square(x, y)
-                sq.is_own = True
-                self.own_grid.addWidget(sq, y, x)
+                sq.is_p1 = True
+                self.grid_p1.addWidget(sq, y, x)
 
                 sq = Square(x, y)
-                sq.is_own = False
-                self.enemy_grid.addWidget(sq, y, x)
+                sq.is_p1 = False
+                self.grid_p2.addWidget(sq, y, x)
 
     def reset_map(self):
         # Clear both boards
         for x in range(0, self.b_size):
             for y in range(0, self.b_size):
-                self.reset_square(self.own_grid, y, x)
-                self.reset_square(self.enemy_grid, y, x)
+                self.reset_square(self.grid_p1, y, x)
+                self.reset_square(self.grid_p2, y, x)
 
-    def reset_square(self, grid, x, y):
+    @staticmethod
+    def reset_square(grid, y, x):
         sq = grid.itemAtPosition(y, x).widget()
         sq.reset()
+
+    def set_board(self, player, random = True):
+        """
+        Places all boats on the board and gives them to the player
+
+        Args:
+            grid: PyQt grid on which boats are placed
+
+        '"""
+
+        for boat_size in self.boat_dict:
+            n_boats = self.boat_dict[boat_size]
+            for i in range(n_boats):
+                if random:
+                    boat = self.place_boat_randomly(player.get_board(), boat_size)
+                    player.add_boat(boat)
+                    for sq in boat.squares:
+                        sq.has_boat = True
+                        sq.boat = boat
+                else: # to define how to place boats manually
+                    pass
+
+    def place_boat_randomly(self, grid, boat_size, smart=True):
+        """
+        Places boat randomly by brute force. If smart, boats are never adjacent
+
+        Args:
+            grid: PyQt grid on which boats are placed
+            boat_size: int, number of squares taken by boat
+            smart: bool, if True, boats are not placed adjacent to each other
+
+        Returns:
+            boat: Boat class instance, containing the squares to which to be placed
+        """
+
+        toggle_or = {'H': 'V', 'V': 'H'}
+
+        squares = None
+        while not squares:
+            x = random.randint(0, self.b_size)
+            y = random.randint(0, self.b_size)
+            top_left = (x, y)
+            ors = ['V', 'H']
+            orientation = random.choice(ors)
+
+            squares = self.get_squares(grid, boat_size, top_left, orientation)
+            if smart and squares is not None and self.has_adjacent_boat(grid, squares):
+                squares = None
+
+            # try alternative orientation before new random attempt
+            if not squares:
+                squares = self.get_squares(grid, boat_size, top_left, toggle_or[orientation])
+            if smart and squares is not None and self.has_adjacent_boat(grid, squares):
+                squares = None
+
+        return Boat(squares, boat_size)
+
+
+    @staticmethod
+    def get_squares(grid, boat_size, top_left, orientation):
+        """
+        Returns potential squares for an unplaced boat given its size, top-left position and orientation
+        If square doesn't exist on board or if any square already has a boat it returns None
+
+        Args:
+            grid: PyQt grid on which boats are placed
+            boat_size: int, number of squares taken by boat
+            top_left: tuple, top-left coordinates of boat being place
+            orientation: str, 'V' or 'H'
+
+        Returns:
+            List of squares if boat can be placed legally using given parameters
+            None otherwise
+
+        """
+
+        x = top_left[0]
+        y = top_left[1]
+
+        squares = []
+        try:
+            # get squares where boat would be placed
+            for i in range(boat_size):
+                if orientation == 'V':
+                    sq = grid.itemAtPosition(y, x + i).widget()
+                else:
+                    sq = grid.itemAtPosition(y + i, x).widget()
+                if sq.has_boat:
+                    return None
+                squares.append(sq)
+            return squares
+        except:  # kicks in if a square is off the grid
+            return None
+
+    @staticmethod
+    def has_adjacent_boat(grid, squares):
+        """
+        Args:
+            grid: PyQt grid on which boats are placed
+            squares: list of potential squares for a boat to be placed; note - boat must not be actually placed yet
+
+        Returns:
+            True if, for any square of boat being placed, there would be an adjacent boat
+            False otherwise
+
+        """
+        adj_list = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+
+        for sq in squares:
+            coord = (sq.x, sq.y)
+
+            # built list of tuples with adjacent squares to coord by adding tuples element wise
+            adj_coords = [tuple(map(sum, zip(coord, adj))) for adj in adj_list]
+
+            for adj_coord in adj_coords:
+                # handles error of non-existent square if on board edge
+                i = adj_coord[0]
+                j = adj_coord[1]
+                try:
+                    adj_sq = grid.itemAtPosition(j, i).widget()
+                    if adj_sq.has_boat:
+                        return True
+                except:
+                    pass
+        return False
 
 
 class Boat(object):
@@ -190,133 +385,66 @@ class Boat(object):
             for sq in self.squares:
                 sq.is_sunk = True
 
-
+    def get_squares(self):
+        return self.squares
 
 
 class Player(object):
-    pass
+    """
+    Defines a player of the game Battleship
+    """
+
+    def __init__(self, name, nature, turn = False):
+        self.name = name
+        self.my_turn = turn
+        self.nature = nature
+        self.board = None
+        self.boats = []
+        self.title_label = None
+
+    def set_turn(self, turn):
+        self.my_turn = turn
+
+    def get_turn(self):
+        return self.my_turn
+    
+    def get_name(self):
+        return self.name
+    
+    def get_nature(self):
+        return self.nature
+
+    def set_grid(self, board):
+        self.board = board
+
+    def get_board(self):
+        return self.board
+
+    def add_boat(self, boat):
+        assert isinstance(boat, Boat)
+        self.boats.append(boat)
+
+    def set_title_label(self, title_label):
+        self.title_label = title_label
 
 
-class BattleshipRunner(object):
-    pass
+def AI_move(enemy_grid):
+    x = random.randint(0, b_size-1)
+    y = random.randint(0, b_size-1)
+    sq = (enemy_grid.itemAtPosition(y, x).widget())
+    time.sleep(0.3)
+    sq.click()
 
-
-def set_board(grid, boat_lst):
-    '''
-    Places all boats on the board, either randomly or through user input
-
-    Args:
-        boats: dict, keys are boat size and values # of boats of that type
-        random: if True, board is set randomly
-    '''
-    for boat_size in boat_lst:
-        for i in range(boat_lst[boat_size]):  # iterate through number of boats of that size
-            if random:
-                place_boat_randomly(grid, boat_size)
-            else:
-                pass
-
-def place_boat_randomly(grid, boat_size, smart = True):
-    '''
-    Places boat randomly by brute force. If smart, boats are never adjacent
-
-    Args:
-        boat_size: int, length of the boat to be placed
-    '''
-    toggle_or = {'H': 'V', 'V': 'H'}
-
-    # brute force method to place boats randomly in valid position
-    squares = None
-    while not squares:
-        x = random.randint(0, window.b_size)
-        y = random.randint(0, window.b_size)
-        top_left = (x, y)
-        ors = ['V', 'H']
-        orientation = random.choice(ors)
-
-        squares = get_squares(grid, boat_size, top_left, orientation)
-        if smart and squares is not None and has_adjacent_boat(grid, squares):
-            squares = None
-
-        if not squares:  # try alternative orientation before new random attempt
-            squares = get_squares(grid, boat_size, top_left, toggle_or[orientation])
-        if smart and squares is not None and has_adjacent_boat(grid, squares):
-            squares = None
-
-    # place boat in squares
-    new_boat = Boat(squares, boat_size)
-    for sq in squares:
-        sq.has_boat = True
-        sq.boat = new_boat
-
-
-def get_squares(grid, boat_size, top_left, orientation):
-    '''
-    Returns potential squares for an unplaced boat given its size, top-left position and orientation
-    If square doesn't exist on board or if any square already has a boat it returns None
-
-    Args:
-        boat_size: int, length of the boat to be placed
-        top_left: tuple, top-left coordinates of boat being place
-        orientation: str, 'V' or 'H'
-
-    Returns:
-        coords: list of tuples, each of which contains x and y coordinates
-        of each square as integers
-    '''
-
-    x = top_left[0]
-    y = top_left[1]
-
-    squares = []
-    coords = []
-    try:
-        for i in range(boat_size):
-            if orientation == 'V':
-                sq = grid.itemAtPosition(y, x + i).widget()
-            else:
-                sq = grid.itemAtPosition(y + i, x).widget()
-            if sq.has_boat:
-                return None
-            squares.append(sq)
-        return squares
-    except:
-        return None
-
-def has_adjacent_boat(grid, squares):
-    adj_list = [(1, 0), (-1, 0), (0, 1), (0, -1)]
-
-    for sq in squares:
-        for y in range(10): #fix
-            for x in range(10):
-                # locate square in grid
-                try:
-                    if sq == grid.itemAtPosition(y, x).widget():
-                        coord = (x, y)
-
-                        # built list of tuples with adjacent coords by adding tuples element wise
-                        adj_coords = [tuple(map(sum, zip(coord, adj))) for adj in adj_list]
-                        for adj_coord in adj_coords:
-                            # handles error of non-existent square if on board edge
-                            try:
-                                i = adj_coord[0]
-                                j = adj_coord[1]
-                                adj_sq = grid.itemAtPosition(j, i).widget()
-                                if adj_sq.has_boat:
-                                    return True
-                            except:
-                                pass
-                except:
-                    pass
-    return False
 
 # dictionary where keys are boat size and values # of boats of that size
-boat_lst = {2: 1, 3: 2, 4: 1, 5: 1}
+boat_dict = {2: 1, 3: 2, 4: 1, 5: 1}
+b_size = 10
+
+player1 = Player(name='player1', nature='HUMAN', turn = True)
+player2 = Player(name='player2', nature='AI')
+players = [player1, player2]
 
 if __name__ == '__main__':
     app = QApplication([])
-    window = MainWindow()
-    set_board(window.own_grid, boat_lst)
-    set_board(window.enemy_grid, boat_lst)
+    window = MainWindow(b_size, boat_dict, players)
     app.exec_()
-    print('done')
