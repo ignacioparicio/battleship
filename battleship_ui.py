@@ -6,15 +6,15 @@ Created on Sun Nov 17 12:07:24 2019
 """
 
 # from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5 import QtTest
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 import random
 import time
-import os
+import numpy as np
 
 random.seed(0)
+
 
 # //Done Find a way to determine when boats are sunk (e.g. create new class Boat with attribute is_sunk)
 # //Done Function to place boats randomly
@@ -27,7 +27,7 @@ random.seed(0)
 #   -> fix bug AI stops shooting
 #   -> functionality to know if last fire was a hit
 # //Done Implementing an AI: how does it play without a board? same type of board but not shown? (sol: using sq.click())
-# TODO: functionality to delay AI actions to see a game AI vs AI 'live'
+# //Done functionality to delay AI actions to see a game AI vs AI 'live'
 # TODO: AI algorithms - function/class outside, store board as array and create algorithm f(len_boats_left, squares hit)
 # TODO: Add text/console explaining latest events (e.g. AI fires at (x,y) / Destroyer sank!)
 # TODO: Animations and timing of events (e.g. squares change color gradually)
@@ -35,10 +35,6 @@ random.seed(0)
 
 
 class Square(QWidget):
-    #expandable = pyqtSignal(int, int)
-    # ohno = pyqtSignal()
-    clicked = pyqtSignal()
-
     def __init__(self, x, y, *args, **kwargs):
         super(Square, self).__init__(*args, **kwargs)
         self.setFixedSize(QSize(30, 30))
@@ -55,9 +51,6 @@ class Square(QWidget):
         """
         paintEvent is called through update(); it repaints the squares of both own and enemy board
         
-        Args:
-            event: a PyQt event
-
         Returns: None, but paints the squares as:
             -> Unexplored: Gray in both boards
             -> Own boats: Green in own board
@@ -96,10 +89,6 @@ class Square(QWidget):
         p.setPen(pen)
         p.drawRect(r)
 
-        # after square is drawn, call run_game to continue execution
-        #QTimer.singleShot(2000, window.run_game())
-        #window.run_game()
-
     def hit(self):
         self.is_hit = True
         # if there is a boat on the square, update status of boat and then all squares attached to boat
@@ -118,19 +107,19 @@ class Square(QWidget):
         self.has_boat = False
         self.is_hit = False
         self.is_sunk = False
-        self.update()
-
-    def set_clickable(self, choice):
-        self.is_clickable = choice
+        self.update()  # trigget a paintEvent
 
     def click(self):
         if self.is_clickable:
             if not self.is_hit:
                 self.hit()
-            self.clicked.emit()
-
+            # self.clicked.emit()
 
     def mouseReleaseEvent(self, event):
+        """
+        Standard PyQt function triggered when mouse released over square
+
+        """
         # not used by AI
         if event.button() == Qt.LeftButton and not self.is_p1:
             self.click()
@@ -142,6 +131,7 @@ class MainWindow(QMainWindow):
         self.b_size = b_size
         self.boat_dict = boat_dict
         self.players = players
+        self.runthread = None
 
         w = QWidget()
         hb = QHBoxLayout()
@@ -153,9 +143,9 @@ class MainWindow(QMainWindow):
         vb_p1.addWidget(title_p1)
         players[0].set_title_label(title_p1)
 
-        self.grid_p1 = QGridLayout()
-        self.grid_p1.setSpacing(3)
-        vb_p1.addLayout(self.grid_p1)
+        self.board_p1 = QGridLayout()
+        self.board_p1.setSpacing(3)
+        vb_p1.addLayout(self.board_p1)
 
         # define player2 board
         vb_p2 = QVBoxLayout()
@@ -164,9 +154,9 @@ class MainWindow(QMainWindow):
         vb_p2.addWidget(title_p2)
         players[1].set_title_label(title_p2)
 
-        self.grid_p2 = QGridLayout()
-        self.grid_p2.setSpacing(3)
-        vb_p2.addLayout(self.grid_p2)
+        self.board_p2 = QGridLayout()
+        self.board_p2.setSpacing(3)
+        vb_p2.addLayout(self.board_p2)
 
         # merge into layout
         v_spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
@@ -175,20 +165,18 @@ class MainWindow(QMainWindow):
         hb.addLayout(vb_p2)
         w.setLayout(hb)
         self.setCentralWidget(w)
-        
+
         # initialize boards and give them to players
         self.init_board()
-        self.players[0].set_grid(self.grid_p1)
-        self.players[1].set_grid(self.grid_p2)
-
+        self.players[0].set_board(self.board_p1)
+        self.players[1].set_board(self.board_p2)
 
         # prepare for first turn and set boats
         for player in players:
-            print(f'playe {player.get_name()} has turn {player.get_turn()}')
-            squares = get_all_grid_squares(player.get_board())  # get player's squares
-            # if it is my turn, my square are not clickable, and vice versa
+            squares = get_all_board_squares(player.get_board())
+            # if it is my turn, my squares are not clickable, and vice versa
             for sq in squares:
-                sq.set_clickable(not player.get_turn())
+                sq.is_clickable = not player.get_turn()
             self.set_board(player)
 
         self.show()
@@ -197,47 +185,42 @@ class MainWindow(QMainWindow):
         # self.reset_map()
 
     def run_game(self):
-        #app.processEvents()
-        while not is_game_over():
-            for p in self.players:
-                if p.get_nature() == 'AI':
-                    AI_move(other_player[p].get_board())
+        self.runthread = RunGameThread()
+        self.runthread.start()
 
-
-                
     def init_board(self):
         """
-        Adds squares both to grids of player1 and player2
+        Adds squares both to boards of player1 and player2
 
         """
         for x in range(0, self.b_size):
             for y in range(0, self.b_size):
                 sq = Square(x, y)
                 sq.is_p1 = True
-                self.grid_p1.addWidget(sq, y, x)
+                self.board_p1.addWidget(sq, y, x)
 
                 sq = Square(x, y)
                 sq.is_p1 = False
-                self.grid_p2.addWidget(sq, y, x)
+                self.board_p2.addWidget(sq, y, x)
 
     def reset_map(self):
         # Clear both boards
         for x in range(0, self.b_size):
             for y in range(0, self.b_size):
-                self.reset_square(self.grid_p1, y, x)
-                self.reset_square(self.grid_p2, y, x)
+                self.reset_square(self.board_p1, y, x)
+                self.reset_square(self.board_p2, y, x)
 
     @staticmethod
-    def reset_square(grid, y, x):
-        sq = grid.itemAtPosition(y, x).widget()
+    def reset_square(board, y, x):
+        sq = board.itemAtPosition(y, x).widget()
         sq.reset()
 
-    def set_board(self, player, random = True):
+    def set_board(self, player, random=True):
         """
         Places all boats on the board and gives them to the player
 
         Args:
-            grid: PyQt grid on which boats are placed
+            player: player for which the board is to be set
 
         '"""
 
@@ -250,15 +233,15 @@ class MainWindow(QMainWindow):
                     for sq in boat.squares:
                         sq.has_boat = True
                         sq.boat = boat
-                else: # to define how to place boats manually
+                else:  # to define how to place boats manually
                     pass
 
-    def place_boat_randomly(self, grid, boat_size, smart=True):
+    def place_boat_randomly(self, board, boat_size, smart=True):
         """
         Places boat randomly by brute force. If smart, boats are never adjacent
 
         Args:
-            grid: PyQt grid on which boats are placed
+            board: PyQt grid on which boats are placed
             boat_size: int, number of squares taken by boat
             smart: bool, if True, boats are not placed adjacent to each other
 
@@ -276,27 +259,26 @@ class MainWindow(QMainWindow):
             ors = ['V', 'H']
             orientation = random.choice(ors)
 
-            squares = self.get_squares(grid, boat_size, top_left, orientation)
-            if smart and squares is not None and self.has_adjacent_boat(grid, squares):
+            squares = self.get_squares(board, boat_size, top_left, orientation)
+            if smart and squares is not None and self.has_adjacent_boat(board, squares):
                 squares = None
 
             # try alternative orientation before new random attempt
             if not squares:
-                squares = self.get_squares(grid, boat_size, top_left, toggle_or[orientation])
-            if smart and squares is not None and self.has_adjacent_boat(grid, squares):
+                squares = self.get_squares(board, boat_size, top_left, toggle_or[orientation])
+            if smart and squares is not None and self.has_adjacent_boat(board, squares):
                 squares = None
 
         return Boat(squares, boat_size)
 
-
     @staticmethod
-    def get_squares(grid, boat_size, top_left, orientation):
+    def get_squares(board, boat_size, top_left, orientation):
         """
         Returns potential squares for an unplaced boat given its size, top-left position and orientation
         If square doesn't exist on board or if any square already has a boat it returns None
 
         Args:
-            grid: PyQt grid on which boats are placed
+            board: PyQt grid on which boats are placed
             boat_size: int, number of squares taken by boat
             top_left: tuple, top-left coordinates of boat being place
             orientation: str, 'V' or 'H'
@@ -315,21 +297,21 @@ class MainWindow(QMainWindow):
             # get squares where boat would be placed
             for i in range(boat_size):
                 if orientation == 'V':
-                    sq = grid.itemAtPosition(y, x + i).widget()
+                    sq = board.itemAtPosition(y, x + i).widget()
                 else:
-                    sq = grid.itemAtPosition(y + i, x).widget()
+                    sq = board.itemAtPosition(y + i, x).widget()
                 if sq.has_boat:
                     return None
                 squares.append(sq)
             return squares
-        except:  # kicks in if a square is off the grid
+        except:  # kicks in if a square is off the board
             return None
 
     @staticmethod
-    def has_adjacent_boat(grid, squares):
+    def has_adjacent_boat(board, squares):
         """
         Args:
-            grid: PyQt grid on which boats are placed
+            board: PyQt grid on which boats are placed
             squares: list of potential squares for a boat to be placed; note - boat must not be actually placed yet
 
         Returns:
@@ -350,7 +332,7 @@ class MainWindow(QMainWindow):
                 i = adj_coord[0]
                 j = adj_coord[1]
                 try:
-                    adj_sq = grid.itemAtPosition(j, i).widget()
+                    adj_sq = board.itemAtPosition(j, i).widget()
                     if adj_sq.has_boat:
                         return True
                 except:
@@ -363,6 +345,7 @@ class Boat(object):
     A boat is simply a collection of squares
 
     """
+
     def __init__(self, squares, size):
         self.squares = squares
         self.size = size
@@ -389,27 +372,36 @@ class Player(object):
     Defines a player of the game Battleship
     """
 
-    def __init__(self, name, nature, turn = False):
+    def __init__(self, name, nature, turn=False, AI_mode='fool'):
         self.name = name
         self.my_turn = turn
         self.nature = nature
         self.board = None
         self.boats = []
         self.title_label = None
+        self.AI_mode = AI_mode
+
+    def AI_move(self):
+        # if many modes, consider putting into dictionary
+        if self.AI_mode == 'fool':
+            target = fool_AI(board_to_array(other_player[self].get_board()))
+
+        sq = other_player[self].get_board().itemAtPosition(*target).widget()
+        sq.click()
 
     def set_turn(self, turn):
         self.my_turn = turn
 
     def get_turn(self):
         return self.my_turn
-    
+
     def get_name(self):
         return self.name
-    
+
     def get_nature(self):
         return self.nature
 
-    def set_grid(self, board):
+    def set_board(self, board):
         self.board = board
 
     def get_board(self):
@@ -425,6 +417,7 @@ class Player(object):
     def has_lost(self):
         return all([boat.is_sunk for boat in self.boats])
 
+
 def reverse_turns():
     """
     Reverses the turns of both players by:
@@ -435,11 +428,11 @@ def reverse_turns():
     """
     for player in players:
         player.set_turn(not player.get_turn())  # reverse turn
-        squares = get_all_grid_squares(player.get_board())  # get player's squares
+        squares = get_all_board_squares(player.get_board())  # get player's squares
 
         # if it is my turn, my square are not clickable, and vice versa
         for sq in squares:
-            sq.set_clickable(not player.get_turn())
+            sq.is_clickable = not player.get_turn()
 
         # update player's label on the board
         text = (f'Board of {player.get_name()} - {player.get_nature()}')
@@ -447,11 +440,12 @@ def reverse_turns():
             text = text + ' - Your turn!'
         player.title_label.setText(text)
 
-def get_all_grid_squares(grid):
+
+def get_all_board_squares(board):
     """
 
     Args:
-        grid: PyQt grid on which boats are placed
+        board: PyQt grid on which boats are placed
 
     Returns:
         squares: list, colletion of PyQt widgets acting as squares of the board
@@ -460,8 +454,25 @@ def get_all_grid_squares(grid):
     squares = []
     for x in range(0, b_size):
         for y in range(0, b_size):
-            squares.append(grid.itemAtPosition(y, x).widget())
+            squares.append(board.itemAtPosition(y, x).widget())
     return squares
+
+
+def board_to_array(board):
+    array = np.empty((b_size, b_size), dtype='str')
+    for i in range(b_size):
+        for j in range(b_size):
+            sq = board.itemAtPosition(i, j).widget()
+            if not sq.is_hit:
+                array[i, j] = 'x'
+            elif not sq.has_boat:
+                array[i, j] = 'w'
+            elif not sq.is_sunk:
+                array[i, j] = 'h'
+            else:
+                array[i, j] = 's'
+    return array
+
 
 def is_game_over():
     for player in players:
@@ -472,20 +483,38 @@ def is_game_over():
             return True
     return False
 
-def AI_move(enemy_grid):
-    x = random.randint(0, b_size-1)
-    y = random.randint(0, b_size-1)
-    sq = enemy_grid.itemAtPosition(y, x).widget()
 
-    #QtTest.qWait(300)
+def fool_AI(enemy_array):
+    """
+    Fool AI that shoots at random at unexplored tiles
 
-    #timer = QTimer()
-    #timer.timeout.connect(sq.click())
-    #timer.start(1000)
+    Args:
+        enemy_array: a numpy array representing a board, where:
+            'x' are unexplored tiles
+            'w' are explored water tiles
+            'h' are explored hit tiles
+            's' are explored sunk tiles
 
-    #QTimer.singleShot(1000, lambda: sq.click())
-    sq.click()
+    Returns:
+        target: tuple of ints, 2D coordinates of recommended tile to fire at
 
+    """
+    while True:
+        target = (random.randint(0, b_size - 1), random.randint(0, b_size - 1))
+        if enemy_array[target] == 'x':
+            return target
+
+
+class RunGameThread(QThread):
+    def __init__(self):
+        QThread.__init__(self)
+
+    def run(self):
+        while not is_game_over():
+            for p in players:
+                if p.get_nature() == 'AI':
+                    time.sleep(0.2)
+                    p.AI_move()
 
 
 # dictionary where keys are boat size and values # of boats of that size
