@@ -11,10 +11,9 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 import random
 import time
-import numpy as np
+import battleship_ai
 
 random.seed(0)
-
 
 # //Done Find a way to determine when boats are sunk (e.g. create new class Boat with attribute is_sunk)
 # //Done Function to place boats randomly
@@ -132,6 +131,9 @@ class MainWindow(QMainWindow):
         self.boat_dict = boat_dict
         self.players = players
         self.runthread = None
+
+        self.setWindowTitle('Battleship')
+        self.setWindowIcon(QIcon('icon5.png'))
 
         w = QWidget()
         hb = QHBoxLayout()
@@ -372,7 +374,7 @@ class Player(object):
     Defines a player of the game Battleship
     """
 
-    def __init__(self, name, nature, turn=False, AI_mode='fool'):
+    def __init__(self, name, nature, AI_mode='fool', turn=False):
         self.name = name
         self.my_turn = turn
         self.nature = nature
@@ -383,8 +385,11 @@ class Player(object):
 
     def AI_move(self):
         # if many modes, consider putting into dictionary
+        enemy_array = battleship_ai.board_to_array(other_player[self].get_board(), b_size)
         if self.AI_mode == 'fool':
-            target = fool_AI(board_to_array(other_player[self].get_board()))
+            target = battleship_ai.fool_AI(enemy_array, b_size, boat_dict)
+        elif self.AI_mode == 'standard':
+            target = battleship_ai.standard_AI(enemy_array, b_size, boat_dict)
 
         sq = other_player[self].get_board().itemAtPosition(*target).widget()
         sq.click()
@@ -458,22 +463,6 @@ def get_all_board_squares(board):
     return squares
 
 
-def board_to_array(board):
-    array = np.empty((b_size, b_size), dtype='str')
-    for i in range(b_size):
-        for j in range(b_size):
-            sq = board.itemAtPosition(i, j).widget()
-            if not sq.is_hit:
-                array[i, j] = 'x'
-            elif not sq.has_boat:
-                array[i, j] = 'w'
-            elif not sq.is_sunk:
-                array[i, j] = 'h'
-            else:
-                array[i, j] = 's'
-    return array
-
-
 def is_game_over():
     for player in players:
         if player.has_lost():
@@ -484,27 +473,6 @@ def is_game_over():
     return False
 
 
-def fool_AI(enemy_array):
-    """
-    Fool AI that shoots at random at unexplored tiles
-
-    Args:
-        enemy_array: a numpy array representing a board, where:
-            'x' are unexplored tiles
-            'w' are explored water tiles
-            'h' are explored hit tiles
-            's' are explored sunk tiles
-
-    Returns:
-        target: tuple of ints, 2D coordinates of recommended tile to fire at
-
-    """
-    while True:
-        target = (random.randint(0, b_size - 1), random.randint(0, b_size - 1))
-        if enemy_array[target] == 'x':
-            return target
-
-
 class RunGameThread(QThread):
     def __init__(self):
         QThread.__init__(self)
@@ -513,16 +481,17 @@ class RunGameThread(QThread):
         while not is_game_over():
             for p in players:
                 if p.get_nature() == 'AI':
-                    time.sleep(0.2)
+                    time.sleep(1)
                     p.AI_move()
+        print('The game is over!')
 
 
 # dictionary where keys are boat size and values # of boats of that size
 boat_dict = {2: 1, 3: 2, 4: 1, 5: 1}
 b_size = 10
 
-player1 = Player(name='player1', nature='AI', turn=True)
-player2 = Player(name='player2', nature='AI', turn=False)
+player1 = Player(name='player1', nature='AI', AI_mode='fool', turn=True)
+player2 = Player(name='player2', nature='AI', AI_mode='standard', turn=False)
 players = [player1, player2]
 other_player = {players[0]: players[1], players[1]: players[0]}
 
