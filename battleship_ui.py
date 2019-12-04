@@ -13,7 +13,7 @@ import random
 import time
 import battleship_ai
 
-random.seed(0)
+random.seed(1)
 
 # //Done Find a way to determine when boats are sunk (e.g. create new class Boat with attribute is_sunk)
 # //Done Function to place boats randomly
@@ -27,7 +27,9 @@ random.seed(0)
 #   -> functionality to know if last fire was a hit
 # //Done Implementing an AI: how does it play without a board? same type of board but not shown? (sol: using sq.click())
 # //Done functionality to delay AI actions to see a game AI vs AI 'live'
-# TODO: AI algorithms - function/class outside, store board as array and create algorithm f(len_boats_left, squares hit)
+# //Done: AI algorithms - function/class outside, store board as array and create algorithm f(len_boats_left, squares hit)
+# TODO: Fix AI bug
+# TODO: way to test power of AIs over big sample size
 # TODO: Add text/console explaining latest events (e.g. AI fires at (x,y) / Destroyer sank!)
 # TODO: Animations and timing of events (e.g. squares change color gradually)
 # TODO: User to define how many boats/size of board/placement of boats
@@ -384,12 +386,19 @@ class Player(object):
         self.AI_mode = AI_mode
 
     def AI_move(self):
+
+        # additional check before moving that game is still on
+        if is_game_over():
+            return None
+
         # if many modes, consider putting into dictionary
         enemy_array = battleship_ai.board_to_array(other_player[self].get_board(), b_size)
         if self.AI_mode == 'fool':
-            target = battleship_ai.fool_AI(enemy_array, b_size, boat_dict)
+            target = battleship_ai.fool_AI(enemy_array, b_size, self.max_boat_size())
         elif self.AI_mode == 'standard':
-            target = battleship_ai.standard_AI(enemy_array, b_size, boat_dict)
+            target = battleship_ai.standard_AI(enemy_array, b_size, self.max_boat_size())
+        elif self.AI_mode == 'hard':
+            target = battleship_ai.hard_AI(enemy_array, b_size, self.max_boat_size())
 
         sq = other_player[self].get_board().itemAtPosition(*target).widget()
         sq.click()
@@ -421,6 +430,17 @@ class Player(object):
 
     def has_lost(self):
         return all([boat.is_sunk for boat in self.boats])
+
+    def max_boat_size(self):
+        boat_sizes = [[k] * boat_dict[k] for k in boat_dict.keys()]
+        boat_sizes_flat = [item for sublist in boat_sizes for item in sublist]
+        for boat in self.boats:
+            if boat.is_sunk:
+                boat_sizes_flat.remove(boat.size)
+
+        if len(boat_sizes_flat) > 0:
+            return max(boat_sizes_flat)
+
 
 
 def reverse_turns():
@@ -481,17 +501,17 @@ class RunGameThread(QThread):
         while not is_game_over():
             for p in players:
                 if p.get_nature() == 'AI':
-                    time.sleep(1)
+                    time.sleep(delay_AI)
                     p.AI_move()
-        print('The game is over!')
 
 
 # dictionary where keys are boat size and values # of boats of that size
 boat_dict = {2: 1, 3: 2, 4: 1, 5: 1}
 b_size = 10
+delay_AI = 0.05 # delay in seconds before AI move
 
-player1 = Player(name='player1', nature='AI', AI_mode='fool', turn=True)
-player2 = Player(name='player2', nature='AI', AI_mode='standard', turn=False)
+player1 = Player(name='AI hard', nature='AI', AI_mode='hard', turn=True)
+player2 = Player(name='AI hard', nature='AI', AI_mode='hard', turn=False)
 players = [player1, player2]
 other_player = {players[0]: players[1], players[1]: players[0]}
 
