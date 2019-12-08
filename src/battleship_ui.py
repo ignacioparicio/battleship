@@ -1,5 +1,6 @@
-# -*- coding: utf-8 -*-
 """
+GUI for the game of battleship.
+
 Created on Sun Nov 17 12:07:24 2019
 
 @author: Ignacio Paricio
@@ -12,7 +13,6 @@ from PyQt5.QtCore import *
 import random
 import time
 import battleship_ai
-import sys
 
 random.seed(1)
 
@@ -57,7 +57,7 @@ class Square(QWidget):
     def paintEvent(self, event):
         """
         paintEvent is called through update(); it repaints the squares of both own and enemy board
-        
+
         Returns: None, but paints the squares as:
             -> Unexplored: Gray in both boards
             -> Own boats: Green in own board
@@ -70,19 +70,22 @@ class Square(QWidget):
         if self.has_boat:
             if self.is_hit:
                 if self.is_sunk:
-                    inner, outer = QColor('#820808'), QColor('#5e0606')  # sunk
+                    inner, outer = QColor("#820808"), QColor("#5e0606")  # sunk
                 elif not self.is_sunk:
-                    inner, outer = QColor('#ff0000'), QColor('#bd0000')  # hit but not sunk
+                    inner, outer = (
+                        QColor("#ff0000"),
+                        QColor("#bd0000"),
+                    )  # hit but not sunk
             elif not self.is_hit:
                 if self.is_p1:
-                    inner, outer = QColor('#019424'), QColor('#006e1a')  # own boat
+                    inner, outer = QColor("#019424"), QColor("#006e1a")  # own boat
                 elif not self.is_p1:
-                    inner, outer = Qt.lightGray, Qt.gray,  # unexplored
+                    inner, outer = (Qt.lightGray, Qt.gray)  # unexplored
         elif not self.has_boat:
             if self.is_hit:
-                inner, outer = QColor('#00bfff'), QColor('##008bba')  # water
+                inner, outer = QColor("#00bfff"), QColor("##008bba")  # water
             elif not self.is_hit:
-                inner, outer = Qt.lightGray, Qt.gray,  # unexplored
+                inner, outer = (Qt.lightGray, Qt.gray)  # unexplored
 
         # p is a QPainter widget class; performs low-level painting on widgets
         p = QPainter(self)
@@ -140,8 +143,8 @@ class MainWindow(QMainWindow):
         self.players = players
         self.runthread = None
 
-        self.setWindowTitle('Battleship')
-        self.setWindowIcon(QIcon('icon5.png'))
+        self.setWindowTitle("Battleship")
+        self.setWindowIcon(QIcon("../resources/icons/icon1.png"))
 
         w = QWidget()
         hb = QHBoxLayout()
@@ -149,7 +152,9 @@ class MainWindow(QMainWindow):
         # define player1 board
         vb_p1 = QVBoxLayout()
         title_p1 = QLabel()
-        title_p1.setText(f'Board of {players[0].get_name()} - {players[0].get_nature()}')
+        title_p1.setText(
+            f"Board of {players[0].get_name()} - {players[0].get_nature()}"
+        )
         vb_p1.addWidget(title_p1)
         players[0].set_title_label(title_p1)
 
@@ -160,7 +165,9 @@ class MainWindow(QMainWindow):
         # define player2 board
         vb_p2 = QVBoxLayout()
         title_p2 = QLabel()
-        title_p2.setText(f'Board of {players[1].get_name()} - {players[1].get_nature()}')
+        title_p2.setText(
+            f"Board of {players[1].get_name()} - {players[1].get_nature()}"
+        )
         vb_p2.addWidget(title_p2)
         players[1].set_title_label(title_p2)
 
@@ -259,14 +266,14 @@ class MainWindow(QMainWindow):
             boat: Boat class instance, containing the squares to which to be placed
         """
 
-        toggle_or = {'H': 'V', 'V': 'H'}
+        toggle_or = {"H": "V", "V": "H"}
 
         squares = None
         while not squares:
             x = random.randint(0, self.b_size)
             y = random.randint(0, self.b_size)
             top_left = (x, y)
-            ors = ['V', 'H']
+            ors = ["V", "H"]
             orientation = random.choice(ors)
 
             squares = self.get_squares(board, boat_size, top_left, orientation)
@@ -275,7 +282,9 @@ class MainWindow(QMainWindow):
 
             # try alternative orientation before new random attempt
             if not squares:
-                squares = self.get_squares(board, boat_size, top_left, toggle_or[orientation])
+                squares = self.get_squares(
+                    board, boat_size, top_left, toggle_or[orientation]
+                )
             if smart and squares is not None and self.has_adjacent_boat(board, squares):
                 squares = None
 
@@ -306,7 +315,7 @@ class MainWindow(QMainWindow):
         try:
             # get squares where boat would be placed
             for i in range(boat_size):
-                if orientation == 'V':
+                if orientation == "V":
                     sq = board.itemAtPosition(y, x + i).widget()
                 else:
                     sq = board.itemAtPosition(y + i, x).widget()
@@ -382,9 +391,9 @@ class Player(object):
     Defines a player of the game Battleship
     """
 
-    def __init__(self, name, nature, AI_mode='fool', turn=False):
+    def __init__(self, name, nature, AI_mode="fool", to_play=False):
         self.name = name
-        self.my_turn = turn
+        self.my_turn = to_play
         self.nature = nature
         self.board = None
         self.boats = []
@@ -398,19 +407,23 @@ class Player(object):
             return None
 
         # if many modes, consider putting into dictionary
-        enemy_array = battleship_ai.board_to_array(other_player[self].get_board(), b_size)
-        if self.AI_mode == 'fool':
+        enemy_array = battleship_ai.board_to_array(
+            other_player[self].get_board(), b_size
+        )
+        if self.AI_mode == "fool":
             target = battleship_ai.fool_AI(enemy_array, b_size, self.max_boat_size())
-        elif self.AI_mode == 'standard':
-            target = battleship_ai.standard_AI(enemy_array, b_size, self.max_boat_size())
-        elif self.AI_mode == 'hard':
+        elif self.AI_mode == "standard":
+            target = battleship_ai.standard_AI(
+                enemy_array, b_size, self.max_boat_size()
+            )
+        elif self.AI_mode == "hard":
             target = battleship_ai.hard_AI(enemy_array, b_size, self.max_boat_size())
 
         sq = other_player[self].get_board().itemAtPosition(*target).widget()
         sq.click()
 
-    def set_turn(self, turn):
-        self.my_turn = turn
+    def set_turn(self, to_play):
+        self.my_turn = to_play
 
     def get_turn(self):
         return self.my_turn
@@ -448,7 +461,6 @@ class Player(object):
             return max(boat_sizes_flat)
 
 
-
 def reverse_turns():
     """
     Reverses the turns of both players by:
@@ -466,9 +478,9 @@ def reverse_turns():
             sq.is_clickable = not player.get_turn()
 
         # update player's label on the board
-        text = (f'Board of {player.get_name()} - {player.get_nature()}')
+        text = f"Board of {player.get_name()} - {player.get_nature()}"
         if player.get_turn():
-            text = text + ' - Your turn!'
+            text = text + " - Your turn!"
         player.title_label.setText(text)
 
 
@@ -487,15 +499,13 @@ def get_all_board_squares(board):
         for y in range(0, b_size):
             squares.append(board.itemAtPosition(y, x).widget())
     return squares
-if is_game_over():
-    sys.exit(app.exec_())
 
 
 def is_game_over():
     for player in players:
         if player.has_lost():
-            #sys.exit(app.exec_()) with this the loop doesn't continue
-            text = f'Game is over! {other_player[player].get_name()} won the game!!!'
+            # sys.exit(app.exec_()) with this the loop doesn't continue
+            text = f"Game is over! {other_player[player].get_name()} won the game!!!"
             player.title_label.setText(text)
             other_player[player].title_label.setText(text)
             return True
@@ -509,7 +519,7 @@ class RunGameThread(QThread):
     def run(self):
         while not is_game_over():
             for p in players:
-                if p.get_nature() == 'AI':
+                if p.get_nature() == "AI":
                     time.sleep(delay_AI)
                     p.AI_move()
 
@@ -517,17 +527,17 @@ class RunGameThread(QThread):
 # dictionary where keys are boat size and values # of boats of that size
 boat_dict = {2: 1, 3: 2, 4: 1, 5: 1}
 b_size = 10
-delay_AI = 0.1 # delay in seconds before AI move
+delay_AI = 0.1  # delay in seconds before AI move
 n = 3
 
-player1 = Player(name='AI hard', nature='AI', AI_mode='hard', turn=True)
-player2 = Player(name='AI hard', nature='AI', AI_mode='hard', turn=False)
+player1 = Player(name="Ignacio", nature="human", to_play=True)
+player2 = Player(name="AI hard", nature="AI", AI_mode="hard", to_play=False)
 players = [player1, player2]
 other_player = {players[0]: players[1], players[1]: players[0]}
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     for i in range(n):
         app = QApplication([])
         window = MainWindow(b_size, boat_dict, players)
         app.exec_()
-        #app.quit()
+        # app.quit()
