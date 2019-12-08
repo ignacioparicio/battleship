@@ -4,7 +4,7 @@ import random
 random.seed(1)
 np.random.seed(1)
 
-def fool_AI(enemy_array, b_size, max_size):
+def fool_AI(enemy_array, b_size):
     """
     Fool AI that shoots at random at unexplored tiles
 

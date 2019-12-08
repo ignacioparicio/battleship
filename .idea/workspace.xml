@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="b2c7efbb-cddf-4ce0-82c8-58cf11bda3c6" name="Default Changelist" comment="Hard AI working">
+      <change beforePath="$PROJECT_DIR$/battleship_ai.py" beforeDir="false" afterPath="$PROJECT_DIR$/battleship_ai.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/battleship_ui.py" beforeDir="false" afterPath="$PROJECT_DIR$/battleship_ui.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FavoritesManager">
+    <favorites_list name="Battleship" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="Ignacio Paricio &lt;ignacio.paricio@outlook.com&gt;" />
+      </list>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1Tk3wwpwk7xhqdjlTgrqoBaGy1X" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Python" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../3 - Other/sql" />
+    <property name="restartRequiresConfirmation" value="false" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyIntegratedToolsModulesConfigurable" />
+    <property name="settings.editor.splitter.proportion" value="0.23297137" />
+  </component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings module-name="House scraper" is-module-sdk="true">
+        <option name="myUseModuleSdk" value="true" />
+        <option name="myModuleName" value="House scraper" />
+      </console-settings>
+    </option>
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Ignacio Paricio\Box Sync\Ignacio\1 - Ignacio personal\Python\3 - Other\sql" />
+      <recent name="C:\Users\Ignacio Paricio\Box Sync\Ignacio\1 - Ignacio personal\Python" />
+      <recent name="C:\Users\Ignacio Paricio\Box Sync\GEP Aero - LM6 (internal)\99 - McKinsey internal\3 - Personal folders\Ignacio\Aspen_comp" />
+      <recent name="C:\Users\Ignacio Paricio\Box Sync\Ignacio\1 - Ignacio personal\Python\1 - Projects\Kaggle\House Prices" />
+      <recent name="C:\Users\Ignacio Paricio\Box Sync\Ignacio\1 - Ignacio personal\Python\1 - Projects\Battleship" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.sql">
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <module name="House scraper" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pyautogui_scroller" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Battleship" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../.." />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../pyautogui_scroller.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="scratch_5" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="4 - changelog_gen" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$APPLICATION_CONFIG_DIR$/scratches" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/scratch_5.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="scratch_7" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="4 - changelog_gen" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$APPLICATION_CONFIG_DIR$/scratches" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/scratch_7.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="scratch_8" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Battleship" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\anaconda3\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$APPLICATION_CONFIG_DIR$/scratches" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/scratch_8.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="sql" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Battleship" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\anaconda3\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../3 - Other/sql" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../3 - Other/sql/sql.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="Tox" factoryName="Tox">
+      <module name="House scraper" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Doctests">
+      <module name="House scraper" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Unittests">
+      <module name="House scraper" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.pyautogui_scroller" />
+      <item itemvalue="Python.scratch_5" />
+      <item itemvalue="Python.scratch_7" />
+      <item itemvalue="Python.scratch_8" />
+      <item itemvalue="Python.sql" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.sql" />
+        <item itemvalue="Python.pyautogui_scroller" />
+        <item itemvalue="Python.scratch_8" />
+        <item itemvalue="Python.scratch_7" />
+        <item itemvalue="Python.scratch_5" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b2c7efbb-cddf-4ce0-82c8-58cf11bda3c6" name="Default Changelist" comment="" />
+      <created>1573990508500</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1573990508500</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Turn based features enabled, AI clicks enabled">
+      <created>1574630472623</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1574630472623</updated>
+    </task>
+    <task id="LOCAL-00002" summary="End-to-end game AIvsAI, pending threading">
+      <created>1575051456378</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1575051456378</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Threading implemented, AI as a class and ready to implement multiple levels">
+      <created>1575059121959</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1575059121959</updated>
+    </task>
+    <task id="LOCAL-00004" summary="AI implemented in player class and algorithms separated">
+      <created>1575235125907</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1575235125907</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Standard AI working">
+      <created>1575235151427</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1575235151427</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Hard AI working">
+      <created>1575475850621</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1575475850621</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Hard AI working">
+      <created>1575475874895</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1575475874895</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Turn based features enabled, AI clicks enabled" />
+    <MESSAGE value="End-to-end game AIvsAI, pending threading" />
+    <MESSAGE value="Threading implemented, AI as a class and ready to implement multiple levels" />
+    <MESSAGE value="AI implemented in player class and algorithms separated" />
+    <MESSAGE value="Standard AI working" />
+    <MESSAGE value="Hard AI working" />
+    <option name="LAST_COMMIT_MESSAGE" value="Hard AI working" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="96" y="1" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1581429895223">
+      <screen x="0" y="0" width="1280" height="689" />
+    </state>
+    <state x="96" y="1" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1280.689/1920.0.2048.1122@0.0.1280.689" timestamp="1581429895223" />
+    <state x="321" y="74" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1580925679389">
+      <screen x="0" y="0" width="1280" height="689" />
+    </state>
+    <state x="321" y="74" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1280.689/1920.0.2048.1122@0.0.1280.689" timestamp="1580925679389" />
+    <state x="361" y="0" key="#pyautogui_scroller" timestamp="1581429869545">
+      <screen x="0" y="0" width="1280" height="689" />
+    </state>
+    <state x="361" y="0" key="#pyautogui_scroller/0.0.1280.689/1920.0.2048.1122@0.0.1280.689" timestamp="1581429869545" />
+    <state x="361" y="0" key="#scratch_8" timestamp="1581416535404">
+      <screen x="0" y="0" width="1280" height="689" />
+    </state>
+    <state x="361" y="0" key="#scratch_8/0.0.1280.689@0.0.1280.689" timestamp="1581416535404" />
+    <state x="0" y="0" key="#sql" timestamp="1581497084165">
+      <screen x="0" y="0" width="1280" height="689" />
+    </state>
+    <state x="0" y="0" key="#sql/0.0.1280.689@0.0.1280.689" timestamp="1581497084165" />
+    <state x="205" y="0" key="CommitChangelistDialog2" timestamp="1581501809690">
+      <screen x="0" y="0" width="1280" height="689" />
+    </state>
+    <state x="205" y="0" key="CommitChangelistDialog2/0.0.1280.689/1920.0.2048.1122@0.0.1280.689" timestamp="1580935130592" />
+    <state x="205" y="0" key="CommitChangelistDialog2/0.0.1280.689@0.0.1280.689" timestamp="1581501809690" />
+    <state x="421" y="101" key="FileChooserDialogImpl" timestamp="1581496937367">
+      <screen x="0" y="0" width="1280" height="689" />
+    </state>
+    <state x="421" y="101" key="FileChooserDialogImpl/0.0.1280.689@0.0.1280.689" timestamp="1581496937367" />
+    <state width="1259" height="118" key="GridCell.Tab.0.bottom" timestamp="1581502658452">
+      <screen x="0" y="0" width="1280" height="689" />
+    </state>
+    <state width="1259" height="115" key="GridCell.Tab.0.bottom/0.0.1280.689/1920.0.2048.1122@0.0.1280.689" timestamp="1581429950985" />
+    <state width="2027" height="309" key="GridCell.Tab.0.bottom/0.0.1280.689/1920.0.2048.1122@1920.0.2048.1122" timestamp="1581235974769" />
+    <state width="1259" height="118" key="GridCell.Tab.0.bottom/0.0.1280.689@0.0.1280.689" timestamp="1581502658452" />
+    <state width="1259" height="118" key="GridCell.Tab.0.center" timestamp="1581502658451">
+      <screen x="0" y="0" width="1280" height="689" />
+    </state>
+    <state width="1259" height="115" key="GridCell.Tab.0.center/0.0.1280.689/1920.0.2048.1122@0.0.1280.689" timestamp="1581429950985" />
+    <state width="2027" height="309" key="GridCell.Tab.0.center/0.0.1280.689/1920.0.2048.1122@1920.0.2048.1122" timestamp="1581235974769" />
+    <state width="1259" height="118" key="GridCell.Tab.0.center/0.0.1280.689@0.0.1280.689" timestamp="1581502658451" />
+    <state width="1259" height="118" key="GridCell.Tab.0.left" timestamp="1581502658451">
+      <screen x="0" y="0" width="1280" height="689" />
+    </state>
+    <state width="1259" height="115" key="GridCell.Tab.0.left/0.0.1280.689/1920.0.2048.1122@0.0.1280.689" timestamp="1581429950985" />
+    <state width="2027" height="309" key="GridCell.Tab.0.left/0.0.1280.689/1920.0.2048.1122@1920.0.2048.1122" timestamp="1581235974769" />
+    <state width="1259" height="118" key="GridCell.Tab.0.left/0.0.1280.689@0.0.1280.689" timestamp="1581502658451" />
+    <state width="1259" height="118" key="GridCell.Tab.0.right" timestamp="1581502658452">
+      <screen x="0" y="0" width="1280" height="689" />
+    </state>
+    <state width="1259" height="115" key="GridCell.Tab.0.right/0.0.1280.689/1920.0.2048.1122@0.0.1280.689" timestamp="1581429950985" />
+    <state width="2027" height="309" key="GridCell.Tab.0.right/0.0.1280.689/1920.0.2048.1122@1920.0.2048.1122" timestamp="1581235974769" />
+    <state width="1259" height="118" key="GridCell.Tab.0.right/0.0.1280.689@0.0.1280.689" timestamp="1581502658452" />
+    <state width="1259" height="36" key="GridCell.Tab.1.bottom" timestamp="1581272317904">
+      <screen x="0" y="0" width="1280" height="689" />
+    </state>
+    <state width="1259" height="36" key="GridCell.Tab.1.bottom/0.0.1280.689@0.0.1280.689" timestamp="1581272317904" />
+    <state width="1259" height="36" key="GridCell.Tab.1.center" timestamp="1581272317904">
+      <screen x="0" y="0" width="1280" height="689" />
+    </state>
+    <state width="1259" height="36" key="GridCell.Tab.1.center/0.0.1280.689@0.0.1280.689" timestamp="1581272317904" />
+    <state width="1259" height="36" key="GridCell.Tab.1.left" timestamp="1581272317904">
+      <screen x="0" y="0" width="1280" height="689" />
+    </state>
+    <state width="1259" height="36" key="GridCell.Tab.1.left/0.0.1280.689@0.0.1280.689" timestamp="1581272317904" />
+    <state width="1259" height="36" key="GridCell.Tab.1.right" timestamp="1581272317904">
+      <screen x="0" y="0" width="1280" height="689" />
+    </state>
+    <state width="1259" height="36" key="GridCell.Tab.1.right/0.0.1280.689@0.0.1280.689" timestamp="1581272317904" />
+    <state x="142" y="0" key="SettingsEditor" timestamp="1581008884144">
+      <screen x="0" y="0" width="1280" height="689" />
+    </state>
+    <state x="142" y="0" key="SettingsEditor/0.0.1280.689@0.0.1280.689" timestamp="1581008884144" />
+    <state x="2013" y="93" width="1862" height="936" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1581067491036">
+      <screen x="1920" y="0" width="2048" height="1122" />
+    </state>
+    <state x="2013" y="93" width="1862" height="936" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1280.689/1920.0.2048.1122@1920.0.2048.1122" timestamp="1581067491036" />
+    <state x="336" y="169" key="com.intellij.ide.util.TipDialog" timestamp="1581416086853">
+      <screen x="0" y="0" width="1280" height="689" />
+    </state>
+    <state x="336" y="169" key="com.intellij.ide.util.TipDialog/0.0.1280.689/1920.0.2048.1122@0.0.1280.689" timestamp="1580932330437" />
+    <state x="336" y="169" key="com.intellij.ide.util.TipDialog/0.0.1280.689@0.0.1280.689" timestamp="1581416086853" />
+    <state x="307" y="246" key="git4idea.ui.GitStashDialog" timestamp="1581501237109">
+      <screen x="0" y="0" width="1280" height="689" />
+    </state>
+    <state x="307" y="246" key="git4idea.ui.GitStashDialog/0.0.1280.689@0.0.1280.689" timestamp="1581501237109" />
+    <state x="297" y="-1" width="672" height="676" key="search.everywhere.popup" timestamp="1581262393318">
+      <screen x="0" y="0" width="1280" height="689" />
+    </state>
+    <state x="297" y="-1" width="672" height="676" key="search.everywhere.popup/0.0.1280.689@0.0.1280.689" timestamp="1581262393318" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$APPLICATION_CONFIG_DIR$/scratches/scratch_4.py</url>
+          <line>14</line>
+          <option name="timeStamp" value="20" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$APPLICATION_CONFIG_DIR$/scratches/scratch.py</url>
+          <line>25</line>
+          <option name="timeStamp" value="22" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/../House scraper/house_scraper.py</url>
+          <line>40</line>
+          <option name="timeStamp" value="23" />
+        </line-breakpoint>
+      </breakpoints>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

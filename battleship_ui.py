@@ -12,6 +12,7 @@ from PyQt5.QtCore import *
 import random
 import time
 import battleship_ai
+import sys
 
 random.seed(1)
 
@@ -28,8 +29,13 @@ random.seed(1)
 # //Done Implementing an AI: how does it play without a board? same type of board but not shown? (sol: using sq.click())
 # //Done functionality to delay AI actions to see a game AI vs AI 'live'
 # //Done: AI algorithms - function/class outside, store board as array and create algorithm f(len_boats_left, squares hit)
-# TODO: Fix AI bug
-# TODO: way to test power of AIs over big sample size
+# //Done: Fix AI bug
+# TODO: way to test power of AIs over big sample size (save either to Excel or in python):
+#   - Need to find a way to run program multiple times in a row
+#   - Idea 1: way to quit app and re-run
+#   - Idea 2: call script from different file
+#   - Idea 3: use QThread to run multiple instances in parallel
+#   - Idea 4: post on StackOverflow
 # TODO: Add text/console explaining latest events (e.g. AI fires at (x,y) / Destroyer sank!)
 # TODO: Animations and timing of events (e.g. squares change color gradually)
 # TODO: User to define how many boats/size of board/placement of boats
@@ -481,11 +487,14 @@ def get_all_board_squares(board):
         for y in range(0, b_size):
             squares.append(board.itemAtPosition(y, x).widget())
     return squares
+if is_game_over():
+    sys.exit(app.exec_())
 
 
 def is_game_over():
     for player in players:
         if player.has_lost():
+            #sys.exit(app.exec_()) with this the loop doesn't continue
             text = f'Game is over! {other_player[player].get_name()} won the game!!!'
             player.title_label.setText(text)
             other_player[player].title_label.setText(text)
@@ -508,7 +517,8 @@ class RunGameThread(QThread):
 # dictionary where keys are boat size and values # of boats of that size
 boat_dict = {2: 1, 3: 2, 4: 1, 5: 1}
 b_size = 10
-delay_AI = 0.05 # delay in seconds before AI move
+delay_AI = 0.1 # delay in seconds before AI move
+n = 3
 
 player1 = Player(name='AI hard', nature='AI', AI_mode='hard', turn=True)
 player2 = Player(name='AI hard', nature='AI', AI_mode='hard', turn=False)
@@ -516,6 +526,8 @@ players = [player1, player2]
 other_player = {players[0]: players[1], players[1]: players[0]}
 
 if __name__ == '__main__':
-    app = QApplication([])
-    window = MainWindow(b_size, boat_dict, players)
-    app.exec_()
+    for i in range(n):
+        app = QApplication([])
+        window = MainWindow(b_size, boat_dict, players)
+        app.exec_()
+        #app.quit()
