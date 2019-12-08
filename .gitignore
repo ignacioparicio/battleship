@@ -2,3 +2,6 @@
 *.iml
 out/
 .idea_modules/
+__pycache__/
+*.py[cod]
+*$py.class
