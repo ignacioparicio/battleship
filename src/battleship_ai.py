@@ -1,4 +1,4 @@
-"""Simple, rule-based AIs to play battleship against."""
+"""Simple, rule-based AIs to that play the game of battleship."""
 from typing import Tuple, List
 import random
 import PyQt5

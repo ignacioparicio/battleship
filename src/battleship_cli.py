@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Implements a game of battleship.
+Game of battleship in CLI.
 
 Created on Mon Nov 11 13:47:48 2019
 
@@ -98,16 +98,16 @@ class BattleshipBoard:
         """Returns a square given its coordinates."""
         return self.squares[row][col]
 
-    def set_board(self, random: bool = True):
+    def set_board(self, random_board: bool = True):
         """
         Places all boats on the board, either randomly or following user input.
 
         Args:
             random: if True, board is set randomly
         """
-        for boat_size, count in self.boats.items():
-            for _ in range(count):
-                if random:
+        for boat_size, n_boats in self.boats.items():
+            for _ in range(n_boats):
+                if random_board:
                     self.place_boat_randomly(boat_size)
                 else:
                     self.place_boat(boat_size)
@@ -188,12 +188,11 @@ class BattleshipBoard:
         Returns:
             True if any square has an adjacent boat
         """
-        # Deltas to adjacent
-        adj_list = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+        adj_deltas = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 
         for coord in coords:
             # Build list of tuples with adjacent coords by adding tuples element wise
-            adj_coords = [tuple(map(sum, zip(coord, a))) for a in adj_list]
+            adj_coords = [tuple(map(sum, zip(coord, a))) for a in adj_deltas]
             for adj_coord in adj_coords:
                 # Handles error of non-existent square if on board edge
                 try:
@@ -462,7 +461,7 @@ class Player:
 
 
 if __name__ == "__main__":
-    # natures available are HUMAN and AI. AI can be fool, standard, hard
+    # Natures available are HUMAN and AI. AI can be fool, standard, hard
     player1 = Player(name="player1", nature="AI", random_placement=True)
     player2 = Player(name="player2", nature="HUMAN", random_placement=True)
 
