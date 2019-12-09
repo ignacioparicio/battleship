@@ -10,7 +10,7 @@ Created on Mon Nov 11 13:47:48 2019
 
 # TODO:
 # Implementation:
-#    1 - Come up with better parallel runner
+#   1 - Come up with better parallel runner
 #   2 - Use decorators for getters/setters
 #
 # Big milestones:
