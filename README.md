@@ -9,9 +9,9 @@ All dependencies are captured in the conda env `environment.yml`, with the main
 non-standard dependency being pyqt.
 
 ## Files
-* battleship_ui.py: game of battleship, on a GUI 
-* battleship.py: game of battleship, on CLI
-* battleship_ai.py: definition of AIs playing the game
+* `battleship_ui.py`: game of battleship, on a GUI 
+* `battleship_cli.py`: game of battleship, on CLI
+* `battleship_ai.py`: definition of AIs playing the game
 
 ## Screenshots
 Playing on GUI

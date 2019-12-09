@@ -462,7 +462,7 @@ class Player:
 
 
 if __name__ == "__main__":
-    # natures available are HUMAN and AI
+    # natures available are HUMAN and AI. AI can be fool, standard, hard
     player1 = Player(name="player1", nature="AI", random_placement=True)
     player2 = Player(name="player2", nature="HUMAN", random_placement=True)
 
