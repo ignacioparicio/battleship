@@ -18,8 +18,12 @@ Playing on GUI
 
 ![](resources/screenshots/gui.png)
 
+
 Game over while playing on GUI
+
 ![](resources/screenshots/gui_game_over.png)
 
+
 Playing on CLI
+
 ![](resources/screenshots/cli.png)
